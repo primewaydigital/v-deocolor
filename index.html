@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecionando para o YouTube</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .fallback-link {
+            display: inline-block;
+            background-color: #FF0000;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+        .fallback-link:hover {
+            background-color: #CC0000;
+        }
+        .error {
+            background-color: #fee;
+            color: #c33;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+            border-left: 4px solid #c33;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h1>Abrindo YouTube...</h1>
+        <p id="message">Redirecionando para o vídeo...</p>
+        <a id="fallbackLink" class="fallback-link" href="#">Clique aqui se não abrir automaticamente</a>
+        <div id="error" class="error" style="display: none;"></div>
+    </div>
+
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            // URL ATUALIZADA ABAIXO
+            const youtubeUrl = "https://youtu.be/xpwMvJBUjlM?si=Jlb3f85rofvGQo3c";
+
+            function extractYouTubeId(url) {
+                const pattern = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?|shorts|live)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+                const match = url.match(pattern);
+                return (match && match[1]) ? match[1] : null;
+            }
+
+            const videoId = extractYouTubeId(youtubeUrl);
+
+            if (!videoId) {
+                document.getElementById("message").textContent = "Erro ao processar a URL.";
+                const errorDiv = document.getElementById("error");
+                errorDiv.textContent = "Não foi possível extrair o ID do vídeo.";
+                errorDiv.style.display = "block";
+                document.querySelector(".spinner").style.display = "none";
+                return;
+            }
+
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const fallbackUrl = "https://www.youtube.com/watch?v=" + videoId;
+            document.getElementById("fallbackLink").href = fallbackUrl;
+
+            if (isMobile) {
+                document.getElementById("message").textContent = "Abrindo no aplicativo do YouTube...";
+                
+                if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                    // Protocolo para iOS
+                    window.location.replace("youtube://watch?v=" + videoId);
+                    setTimeout(() => { window.location.replace(fallbackUrl); }, 2500);
+                } else if (/Android/.test(navigator.userAgent)) {
+                    // Intent para Android
+                    const intentUrl = `intent://www.youtube.com/watch?v=${videoId}#Intent;package=com.google.android.youtube;scheme=https;end`;
+                    window.location.replace(intentUrl);
+                    setTimeout(() => { window.location.replace(fallbackUrl); }, 2500);
+                }
+            } else {
+                document.getElementById("message").textContent = "Redirecionando...";
+                window.location.replace(fallbackUrl);
+            }
+        });
+    </script>
+</body>
+</html>
