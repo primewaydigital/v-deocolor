@@ -1,0 +1,20 @@
+ <script>
+        // COLOQUE O ID DO VÍDEO ABAIXO (Ex: fW4v7PauTzg)
+        const videoId = "nom4hIGBbEs"; 
+        
+        const webUrl = "https://www.youtube.com/watch?v=" + videoId;
+        document.getElementById("linkManual").href = webUrl;
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                window.location.replace("youtube://www.youtube.com/watch?v=" + videoId);
+                setTimeout(() => { window.location.replace(webUrl); }, 2500);
+            } else {
+                window.location.replace(`intent://www.youtube.com/watch?v=${videoId}#Intent;package=com.google.android.youtube;scheme=https;end`);
+                setTimeout(() => { window.location.replace(webUrl); }, 2500);
+            }
+        } else {
+            window.location.replace(webUrl);
+        }
+    </script>
