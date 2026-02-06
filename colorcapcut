@@ -1,5 +1,27 @@
- <script>
-        // COLOQUE O ID DO VÍDEO ABAIXO (Ex: fW4v7PauTzg)
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecionando...</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: sans-serif; background: #0f172a; min-height: 100vh; display: flex; align-items: center; justify-content: center; color: white; }
+        .container { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); width: 90%; max-width: 400px; }
+        .spinner { border: 3px solid rgba(255, 255, 255, 0.1); border-top: 3px solid #ff0000; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn { display: inline-block; background: #ff0000; color: white; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <p>Abrindo vídeo no YouTube...</p>
+        <a id="linkManual" class="btn" href="#">Abrir Agora</a>
+    </div>
+
+    <script>
+        // ID DO VÍDEO ATUALIZADO: nom4hIGBbEs
         const videoId = "nom4hIGBbEs"; 
         
         const webUrl = "https://www.youtube.com/watch?v=" + videoId;
@@ -8,13 +30,18 @@
 
         if (isMobile) {
             if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                // Tenta abrir no app do iOS
                 window.location.replace("youtube://www.youtube.com/watch?v=" + videoId);
                 setTimeout(() => { window.location.replace(webUrl); }, 2500);
             } else {
+                // Tenta abrir no app do Android
                 window.location.replace(`intent://www.youtube.com/watch?v=${videoId}#Intent;package=com.google.android.youtube;scheme=https;end`);
                 setTimeout(() => { window.location.replace(webUrl); }, 2500);
             }
         } else {
+            // Desktop: Redireciona direto para a URL web
             window.location.replace(webUrl);
         }
     </script>
+</body>
+</html>
